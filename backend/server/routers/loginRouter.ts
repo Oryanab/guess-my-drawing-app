@@ -14,30 +14,79 @@ router.get(
 );
 
 router.post(
+  "/single-user",
+  async (_req: express.Request, res: express.Response) => {
+    const { key } = _req.body;
+    console.log(key);
+
+    if (key.length < 1) {
+      res.status(403).json({
+        statusCode: 403,
+        confirm: false,
+        message: "user key not provided",
+      });
+      return;
+    }
+    try {
+      const currentUser = await User.findOne({ key });
+      res
+        .status(200)
+        .json({ statusCode: 200, confirm: true, message: currentUser });
+    } catch (err) {
+      res
+        .status(404)
+        .json({ statusCode: 404, confirm: false, message: "user not found" });
+    }
+  }
+);
+
+router.post(
   "/get-user",
+  async (_req: express.Request, res: express.Response) => {
+    const { username, key } = _req.body;
+    const currentUser = await User.findOne({ username, key });
+    if (!currentUser) {
+      res.status(403).json({ statusCode: 403, message: "user not exist" });
+    } else {
+      res.status(200).json({
+        statusCode: 200,
+        message: "user found successfully",
+        key: currentUser.key,
+      });
+    }
+  }
+);
+
+router.post(
+  "/new-user",
   async (_req: express.Request, res: express.Response) => {
     const { username } = _req.body;
     const currentUser = await User.findOne({ username });
     if (!currentUser) {
+      const key = require("crypto").randomBytes(12).toString("hex");
       await User.insertMany({
         username,
-        key: require("crypto").randomBytes(64).toString("hex"),
+        key,
         wins: 0,
         losses: 0,
         date_signed: new Date(),
       })
         .then(() =>
-          res
-            .status(200)
-            .json({ statusCode: 200, message: "User was added successfully" })
+          res.status(200).json({
+            statusCode: 200,
+            message: "User was added successfully",
+            key,
+          })
         )
         .catch(() =>
           res
-            .status(403)
-            .json({ statusCode: 403, message: "username already exist" })
+            .status(500)
+            .json({ statusCode: 500, message: "internal server error" })
         );
     } else {
-      res.status(200).json({ user: currentUser });
+      res
+        .status(403)
+        .json({ statusCode: 403, message: "username already exist" });
     }
   }
 );
