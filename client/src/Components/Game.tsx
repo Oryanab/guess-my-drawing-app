@@ -89,10 +89,13 @@ export default function Game({
             scorePlayerOne={scorePlayerOne}
             scorePlayerTwo={scorePlayerTwo}
             setDrawingImg={setDrawingImg}
+            drawingImg={drawingImg}
             selectedWord={selectedWord}
             setSelectedWord={setSelectedWord}
-            selectedLevel={selectedLevel}
             setSelectedLevel={setSelectedLevel}
+            selectedLevel={selectedLevel}
+            socket={socket}
+            setCurrentTurn={setCurrentTurn}
           />
         </div>
         <div
@@ -111,6 +114,8 @@ export default function Game({
             selectedWord={selectedWord}
             drawingImg={drawingImg}
             selectedLevel={selectedLevel}
+            username={username}
+            socket={socket}
           />
         </div>
       </div>

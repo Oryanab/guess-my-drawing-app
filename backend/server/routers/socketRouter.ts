@@ -31,6 +31,11 @@ interface joinedUserData {
   username: string;
 }
 
+interface getDrawingData {
+  level: string;
+  drawing: string;
+}
+
 // interface SinglePlayer {
 //   username: string;
 //   socketId: string;
@@ -95,6 +100,11 @@ io.on("connection", (socket: Socket) => {
   socket.on("switch_turn", (data) => {
     const currentUser = staticPlayersObject[socket.id];
     socket.to(currentUser.room).emit("your_turn", data);
+  });
+
+  socket.on("sent_drawing", (data: getDrawingData) => {
+    const currentUser = staticPlayersObject[socket.id];
+    socket.to(currentUser.room).emit("receive_drawing", data);
   });
 
   socket.on("disconnect", () => {

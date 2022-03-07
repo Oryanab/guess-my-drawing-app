@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
+import { Socket } from "socket.io-client";
 
 export default function GuessingView({
   playerOne,
@@ -10,6 +11,9 @@ export default function GuessingView({
   setScorePlayerTwo,
   selectedWord,
   drawingImg,
+  selectedLevel,
+  username,
+  socket,
 }: {
   playerOne: string;
   playerTwo: string;
@@ -19,9 +23,39 @@ export default function GuessingView({
   setScorePlayerTwo: React.Dispatch<React.SetStateAction<number>>;
   selectedWord: string;
   drawingImg: string;
+  selectedLevel: string;
+  username: string;
+  socket: Socket;
 }) {
-  const [selectedLevel, setSelectedLevel] = useState<string>("easy");
-  const [waitingView, setWaitingView] = useState<boolean>(true);
+  const [waitingView, setWaitingView] = useState<boolean>(false);
+  const [userGuess, setUserGuess] = useState<string>("");
+
+  const scoreIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (userGuess.length < 0 && userGuess === selectedWord) {
+      switch (selectedLevel) {
+        case "easy":
+          username === playerOne
+            ? setScorePlayerOne((prev) => prev + 1)
+            : setScorePlayerTwo((prev) => prev + 1);
+          break;
+        case "medium":
+          username === playerOne
+            ? setScorePlayerOne((prev) => prev + 2)
+            : setScorePlayerTwo((prev) => prev + 2);
+          break;
+        case "hard":
+          username === playerOne
+            ? setScorePlayerOne((prev) => prev + 3)
+            : setScorePlayerTwo((prev) => prev + 3);
+          break;
+        default:
+          return;
+      }
+    } else {
+      alert("your guess is wrong, please continue guessing or quit match");
+    }
+  };
   return (
     <div>
       <Card style={{ width: "100vw" }}>
@@ -41,7 +75,7 @@ export default function GuessingView({
         </Card.Header>
         <Card.Body>
           <Card.Title>
-            The the opponent has sent you a word with diffculty level{" "}
+            The the opponent has sent you a word with difficulty level{" "}
             {selectedLevel}
           </Card.Title>
           <Card.Text>
@@ -52,22 +86,28 @@ export default function GuessingView({
             <img
               src={
                 waitingView
-                  ? "https://franklinchristianchurch.com/wp-content/uploads/2017/11/Waiting_web.jpg"
-                  : ""
+                  ? drawingImg
+                  : "https://franklinchristianchurch.com/wp-content/uploads/2017/11/Waiting_web.jpg"
               }
               alt=""
               width="280vw"
               style={{ border: "0.5vh solid black", marginBottom: "1vh" }}
             />
-            <Form style={{ display: waitingView ? "none" : "block" }}>
+            <Form style={{ display: waitingView ? "block" : "none" }}>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Enter your guess:</Form.Label>
-                <Form.Control type="text" placeholder="my guess is..." />
+                <Form.Control
+                  onChange={(e) => setUserGuess(e.target.value)}
+                  type="text"
+                  placeholder="my guess is..."
+                />
               </Form.Group>
-              <Button variant="outline-success">Send Guess</Button>
+              <Button onClick={scoreIncrement} variant="outline-success">
+                Send Guess
+              </Button>
             </Form>
           </div>
         </Card.Body>

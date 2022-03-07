@@ -3,6 +3,7 @@ import { Button, Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
 import Board from "./Board";
 import CanvasDraw from "react-canvas-draw";
 import axios from "axios";
+import { Socket } from "socket.io-client";
 
 export default function DrawingView({
   playerOne,
@@ -10,20 +11,26 @@ export default function DrawingView({
   scorePlayerOne,
   scorePlayerTwo,
   setDrawingImg,
+  drawingImg,
   selectedWord,
   setSelectedWord,
   setSelectedLevel,
   selectedLevel,
+  socket,
+  setCurrentTurn,
 }: {
   playerOne: string;
   playerTwo: string;
   scorePlayerOne: number;
   scorePlayerTwo: number;
   setDrawingImg: React.Dispatch<React.SetStateAction<string>>;
+  drawingImg: string;
   selectedWord: string;
   setSelectedWord: React.Dispatch<React.SetStateAction<string>>;
   setSelectedLevel: React.Dispatch<React.SetStateAction<string>>;
   selectedLevel: string;
+  socket: Socket;
+  setCurrentTurn: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [displayedWords, setDisplayedWords] = useState<string[]>([]);
   const [displayCanvasDiv, setDisplayCanvasDiv] = useState<string>("none");
@@ -32,23 +39,24 @@ export default function DrawingView({
 
   // Utils
   const handleClickSaveUrl = () => {
+    if (drawingImg.length > 500) {
+      alert("Your drawing isn't sufficient please keep on drawing");
+      return;
+    }
     const data = canvas.current!.getDataURL();
-    console.log(data);
+    setDrawingImg(data);
   };
 
   const handleClickEraseAll = () => {
-    const data = canvas.current.eraseAll();
-    console.log(data);
+    canvas.current.eraseAll();
   };
 
   const handleClickUndo = () => {
-    const data = canvas.current.undo();
-    console.log(data);
+    canvas.current.undo();
   };
 
   const handleClickReset = () => {
-    const data = canvas.current.clear();
-    console.log(data);
+    canvas.current.clear();
   };
 
   const handleChangeDifficultyLevel = async (selectedLevel: string) => {
@@ -65,8 +73,20 @@ export default function DrawingView({
   // Effects
   useEffect(() => {
     handleChangeDifficultyLevel(selectedLevel);
-    console.log(displayedWords);
   }, [selectedLevel]);
+
+  const handleSwitchTurn = (e: any) => {
+    e.preventDefault();
+    if (drawingImg !== "") {
+      socket.emit("sent_drawing", {
+        level: selectedLevel,
+        drawing: drawingImg,
+      });
+      setCurrentTurn(false);
+    } else {
+      alert("Your drawing isn't saved please save your drawing");
+    }
+  };
 
   return (
     <div>
@@ -150,7 +170,12 @@ export default function DrawingView({
               <button onClick={handleClickReset}>reset</button>
             </div>
           </div>
-          <Button variant="outline-success">Send Drawing</Button>
+          <Button
+            onClick={(e) => handleSwitchTurn(e)}
+            variant="outline-success"
+          >
+            Send Drawing
+          </Button>
         </Card.Body>
         <Card.Body>
           <Button variant="outline-danger">Quit Match</Button>
