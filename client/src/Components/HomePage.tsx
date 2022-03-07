@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Users } from "../types";
 import { Button } from "react-bootstrap";
 import Game from "./Game";
+import io, { Socket } from "socket.io-client";
+const socket: Socket = io("http://localhost:4000");
 
 export default function HomePage({ user }: { user: Users }) {
   //const handlePlayNow = (e: React.MouseEvent<HTMLButtonElement>) => {};
 
   const [profileBlock, setProfileBlock] = useState<string>("block");
-  const [gameBlock, setGameBlock] = useState<boolean>(true);
+  const [gameBlock, setGameBlock] = useState<boolean>(false);
 
   return (
     <div>
@@ -20,13 +22,11 @@ export default function HomePage({ user }: { user: Users }) {
         </h2>
 
         {gameBlock ? (
-          <Game
-            username={user && user.username}
-            wins={user && user.wins}
-            losses={user && user.losses}
-          />
+          <Game username={user && user.username} socket={user && socket} />
         ) : (
-          <Button variant="outline-primary">play now!</Button>
+          <Button onClick={() => setGameBlock(true)} variant="outline-primary">
+            play now!
+          </Button>
         )}
       </div>
     </div>

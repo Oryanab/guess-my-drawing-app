@@ -12,9 +12,3 @@ export interface Users {
   losses: number;
   date_signed: Date;
 }
-
-// single Word interface
-export interface SingleWord {
-  word: string;
-  difficulty: string;
-}

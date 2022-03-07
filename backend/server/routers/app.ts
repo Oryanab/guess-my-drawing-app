@@ -8,6 +8,7 @@ import {
 //const http = require("http");
 const cors = require("cors");
 import loginRoute from "./loginRouter";
+import wordRoute from "./wordRouter";
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(middlewareServerError);
 app.use(middlewarePageNotFound);
 app.use("/api/login", loginRoute);
+app.use("/api/words", wordRoute);
 
 // Connect to Db
 mongoose

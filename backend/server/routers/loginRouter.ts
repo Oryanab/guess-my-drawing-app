@@ -17,7 +17,6 @@ router.post(
   "/single-user",
   async (_req: express.Request, res: express.Response) => {
     const { key } = _req.body;
-    console.log(key);
 
     if (key.length < 1) {
       res.status(403).json({
