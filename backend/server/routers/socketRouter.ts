@@ -33,14 +33,17 @@ interface joinedUserData {
 
 interface getDrawingData {
   level: string;
+  word: string;
   drawing: string;
+  scorePlayerOne: number;
+  scorePlayerTwo: number;
 }
 
-// interface SinglePlayer {
-//   username: string;
-//   socketId: string;
-//   room: string;
-// }
+interface SinglePlayer {
+  username: string;
+  socketId: string;
+  room: string;
+}
 let usersInRoom: string[] = [];
 io.on("connection", (socket: Socket) => {
   socket.on("join_room", (data: joinedUserData) => {
@@ -97,9 +100,16 @@ io.on("connection", (socket: Socket) => {
     console.log(allSocketsInRoom);
   });
 
-  socket.on("switch_turn", (data) => {
+  socket.on("switch_turn", () => {
     const currentUser = staticPlayersObject[socket.id];
-    socket.to(currentUser.room).emit("your_turn", data);
+    const valuesStaticPlayerObject: SinglePlayer[] =
+      Object.values(staticPlayersObject);
+    const secondPlayerInRoom = valuesStaticPlayerObject.find(
+      (user: SinglePlayer) =>
+        user.room === currentUser.room && user.socketId !== currentUser.socketId
+    );
+    io.to(socket.id).in(currentUser.room).emit("your_turn");
+    socket.to(secondPlayerInRoom!.room).emit("not_your_turn");
   });
 
   socket.on("sent_drawing", (data: getDrawingData) => {

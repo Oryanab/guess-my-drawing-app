@@ -35,16 +35,16 @@ export default function DrawingView({
   const [displayedWords, setDisplayedWords] = useState<string[]>([]);
   const [displayCanvasDiv, setDisplayCanvasDiv] = useState<string>("none");
   const [brushColor, setBrushColor] = useState("#130f40");
-  const canvas: any = useRef(null);
+  let canvas: any = useRef(null);
 
   // Utils
   const handleClickSaveUrl = () => {
-    if (drawingImg.length > 500) {
+    if (canvas.current!.getDataURL().length < 500) {
       alert("Your drawing isn't sufficient please keep on drawing");
       return;
     }
-    const data = canvas.current!.getDataURL();
-    setDrawingImg(data);
+
+    setDrawingImg(canvas.current!.getDataURL());
   };
 
   const handleClickEraseAll = () => {
@@ -75,14 +75,29 @@ export default function DrawingView({
     handleChangeDifficultyLevel(selectedLevel);
   }, [selectedLevel]);
 
+  function resetSelectElement() {
+    const elem = document.getElementById("difficulty") as HTMLSelectElement;
+    const elem2 = document.getElementById("words") as HTMLSelectElement;
+    elem!.selectedIndex = 0; // first option is selected, or
+    elem2!.selectedIndex = 0;
+    // -1 for no option selected
+  }
+
   const handleSwitchTurn = (e: any) => {
     e.preventDefault();
     if (drawingImg !== "") {
       socket.emit("sent_drawing", {
         level: selectedLevel,
+        word: selectedWord,
         drawing: drawingImg,
+        scorePlayerOne,
+        scorePlayerTwo,
       });
+
       setCurrentTurn(false);
+      setSelectedWord("");
+      resetSelectElement();
+      canvas = null;
     } else {
       alert("Your drawing isn't saved please save your drawing");
     }
@@ -109,6 +124,7 @@ export default function DrawingView({
           <ListGroupItem>
             <Form.Label>Please select difficulty level:</Form.Label>
             <Form.Select
+              id="difficulty"
               onChange={(e) => {
                 setSelectedLevel(e.target.value);
                 setSelectedWord("");
@@ -123,6 +139,7 @@ export default function DrawingView({
           <ListGroupItem>
             <Form.Label>Please select a Word:</Form.Label>
             <Form.Select
+              id="words"
               onChange={(e) => setSelectedWord(e.target.value)}
               size="sm"
             >
@@ -140,7 +157,7 @@ export default function DrawingView({
             bulk of the card's content.
           </Card.Text>
           <div>
-            <CanvasDraw
+            {/* <CanvasDraw
               style={{ width: "85vw", border: "0.5vh solid black" }}
               brushRadius={1}
               brushColor={brushColor}
@@ -148,7 +165,10 @@ export default function DrawingView({
               canvasWidth={400}
               canvasHeight={400}
               ref={canvas}
-            />
+            /> */}
+            {selectedWord.length > 1 && (
+              <Board brushColor={brushColor} canvas={canvas} />
+            )}
 
             <div
               style={{

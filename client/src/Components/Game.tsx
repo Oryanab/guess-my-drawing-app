@@ -56,6 +56,12 @@ export default function Game({
     // When server got "change turn" this when you can play
     socket &&
       socket.on("your_turn", () => {
+        setCurrentTurn(true);
+      });
+
+    // When server got "change turn" this when you can play
+    socket &&
+      socket.on("not_your_turn", () => {
         setCurrentTurn(false);
       });
 
@@ -116,6 +122,7 @@ export default function Game({
             selectedLevel={selectedLevel}
             username={username}
             socket={socket}
+            setSelectedWord={setSelectedWord}
           />
         </div>
       </div>

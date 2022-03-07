@@ -2,6 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
 import { Socket } from "socket.io-client";
 
+interface getDrawingData {
+  level: string;
+  word: string;
+  drawing: string;
+  scorePlayerOne: number;
+  scorePlayerTwo: number;
+}
+
 export default function GuessingView({
   playerOne,
   playerTwo,
@@ -14,6 +22,7 @@ export default function GuessingView({
   selectedLevel,
   username,
   socket,
+  setSelectedWord,
 }: {
   playerOne: string;
   playerTwo: string;
@@ -26,14 +35,29 @@ export default function GuessingView({
   selectedLevel: string;
   username: string;
   socket: Socket;
+  setSelectedWord: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [waitingView, setWaitingView] = useState<boolean>(false);
+  const [waitingView, setWaitingView] = useState<boolean>(true);
   const [userGuess, setUserGuess] = useState<string>("");
+  const [returnedImage, setReturnedImage] = useState<string>("");
+  const [returnedLevel, setReturnedLevel] = useState<string>("");
+  const [returnedWord, setReturnedWord] = useState<string>("");
+
+  useEffect(() => {
+    socket.on("receive_drawing", (data: getDrawingData) => {
+      setWaitingView(false);
+      setReturnedImage(data.drawing);
+      setReturnedLevel(data.level);
+      setReturnedWord(data.word);
+      setScorePlayerOne(data.scorePlayerOne);
+      setScorePlayerTwo(data.scorePlayerTwo);
+    });
+  }, [socket]);
 
   const scoreIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (userGuess.length < 0 && userGuess === selectedWord) {
-      switch (selectedLevel) {
+    if (userGuess.length > 0 && userGuess === returnedWord) {
+      switch (returnedLevel) {
         case "easy":
           username === playerOne
             ? setScorePlayerOne((prev) => prev + 1)
@@ -41,17 +65,21 @@ export default function GuessingView({
           break;
         case "medium":
           username === playerOne
-            ? setScorePlayerOne((prev) => prev + 2)
-            : setScorePlayerTwo((prev) => prev + 2);
+            ? setScorePlayerOne((prev) => prev + 3)
+            : setScorePlayerTwo((prev) => prev + 3);
           break;
         case "hard":
           username === playerOne
-            ? setScorePlayerOne((prev) => prev + 3)
-            : setScorePlayerTwo((prev) => prev + 3);
+            ? setScorePlayerOne((prev) => prev + 5)
+            : setScorePlayerTwo((prev) => prev + 5);
           break;
         default:
           return;
       }
+      alert("Correct");
+      socket.emit("switch_turn");
+      setWaitingView(true);
+      setSelectedWord("");
     } else {
       alert("your guess is wrong, please continue guessing or quit match");
     }
@@ -76,7 +104,7 @@ export default function GuessingView({
         <Card.Body>
           <Card.Title>
             The the opponent has sent you a word with difficulty level{" "}
-            {selectedLevel}
+            {returnedLevel}
           </Card.Title>
           <Card.Text>
             Some quick example text to build on the card title and make up the
@@ -86,14 +114,14 @@ export default function GuessingView({
             <img
               src={
                 waitingView
-                  ? drawingImg
-                  : "https://franklinchristianchurch.com/wp-content/uploads/2017/11/Waiting_web.jpg"
+                  ? "https://franklinchristianchurch.com/wp-content/uploads/2017/11/Waiting_web.jpg"
+                  : returnedImage
               }
               alt=""
               width="280vw"
               style={{ border: "0.5vh solid black", marginBottom: "1vh" }}
             />
-            <Form style={{ display: waitingView ? "block" : "none" }}>
+            <Form style={{ display: waitingView ? "none" : "block" }}>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
@@ -105,7 +133,10 @@ export default function GuessingView({
                   placeholder="my guess is..."
                 />
               </Form.Group>
-              <Button onClick={scoreIncrement} variant="outline-success">
+              <Button
+                onClick={(e) => scoreIncrement(e)}
+                variant="outline-success"
+              >
                 Send Guess
               </Button>
             </Form>
