@@ -142,7 +142,9 @@ export default function GuessingView({
               >
                 <Form.Label>Enter your guess:</Form.Label>
                 <Form.Control
-                  onChange={(e) => setUserGuess(e.target.value)}
+                  onChange={(e) =>
+                    setUserGuess(e.target.value.toLocaleLowerCase().trim())
+                  }
                   type="text"
                   placeholder="my guess is..."
                   value={userGuess}

@@ -67,7 +67,7 @@ export default function Login() {
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Enter Your Username:</Form.Label>
             <Form.Control
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.trim())}
               type="text"
               placeholder="my username..."
             />
@@ -87,7 +87,7 @@ export default function Login() {
           >
             <Form.Label>Enter Your Secret Key:</Form.Label>
             <Form.Control
-              onChange={(e) => setSecretKey(e.target.value)}
+              onChange={(e) => setSecretKey(e.target.value.trim())}
               type="text"
               placeholder="my secret key..."
             />
