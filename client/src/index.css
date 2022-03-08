@@ -91,3 +91,7 @@
   display: flex;
   justify-content: space-evenly;
 }
+
+.logout {
+  margin-top: 3vh;
+}

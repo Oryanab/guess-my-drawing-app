@@ -4,12 +4,9 @@ import { Button } from "react-bootstrap";
 import Game from "./Game";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
+import { LeaderBoard } from "../types";
+import { Notyf } from "notyf";
 const socket: Socket = io("http://localhost:4000");
-
-interface LeaderBoard {
-  username: string;
-  wins: number;
-}
 
 export default function HomePage({ user }: { user: Users }) {
   //const handlePlayNow = (e: React.MouseEvent<HTMLButtonElement>) => {};
@@ -17,13 +14,22 @@ export default function HomePage({ user }: { user: Users }) {
   const [profileBlock, setProfileBlock] = useState<string>("block");
   const [gameBlock, setGameBlock] = useState<boolean>(false);
   const [leadBoardUsers, setLeadBoardUsers] = useState<LeaderBoard[]>([]);
-
+  const notyf = new Notyf();
   const getLeadBoard = async () => {
     axios.get("http://localhost:4000/api/login/leadboard").then((res) => {
       setLeadBoardUsers(res.data.message);
     });
   };
 
+  const handleLogOut = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    document.cookie =
+      "user_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    notyf.success("Logout successfully");
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
   useEffect(() => {
     getLeadBoard();
   }, []);
@@ -73,7 +79,7 @@ export default function HomePage({ user }: { user: Users }) {
           }}
           variant="outline-primary"
         >
-          play now!
+          <b>play now!</b>
         </Button>
       )}
       <div style={{ display: profileBlock }}>
@@ -88,6 +94,11 @@ export default function HomePage({ user }: { user: Users }) {
             </div>
           ))}
         </div>
+      </div>
+      <div style={{ display: profileBlock }} className="logout">
+        <Button onClick={(e) => handleLogOut(e)} variant="outline-danger">
+          <b>Logout</b>
+        </Button>
       </div>
     </div>
   );

@@ -28,3 +28,30 @@ export interface CanvasDrawProps {
   className?: string | undefined;
   style?: React.CSSProperties | undefined;
 }
+
+export interface GameStarted {
+  started: boolean;
+  players: string[];
+}
+
+export interface FirstTurn {
+  first: boolean;
+}
+
+export interface EndGame {
+  winner: string;
+  loser: string;
+}
+
+export interface getDrawingData {
+  level: string;
+  word: string;
+  drawing: string;
+  scorePlayerOne: number;
+  scorePlayerTwo: number;
+}
+
+export interface LeaderBoard {
+  username: string;
+  wins: number;
+}

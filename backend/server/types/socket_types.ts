@@ -1,20 +1,24 @@
-export interface PlayersObject {}
-
-export interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
+export interface joinedUserData {
+  username: string;
 }
 
-export interface ClientToServerEvents {
-  hello: () => void;
+export interface getDrawingData {
+  level: string;
+  word: string;
+  drawing: string;
+  scorePlayerOne: number;
+  scorePlayerTwo: number;
 }
 
-export interface InterServerEvents {
-  ping: () => void;
+export interface SinglePlayer {
+  username: string;
+  socketId: string;
+  room: string;
 }
 
-export interface SocketData {
-  name: string;
-  age: number;
+export interface CheckScore {
+  playerOne: string;
+  playerOneScore: number;
+  playerTwo: string;
+  playerTwoScore: number;
 }

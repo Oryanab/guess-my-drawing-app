@@ -2,11 +2,7 @@ import express, { Router } from "express";
 require("dotenv").config();
 import User from "../schema/userSchema";
 import { Users } from "../types/mongo_types";
-
-interface LeaderBoard {
-  username: string;
-  wins: number;
-}
+import { LeaderBoard } from "../types/server_types";
 
 // Start Router
 const router: Router = express.Router();
@@ -69,7 +65,7 @@ router.post(
     } else {
       res.status(200).json({
         statusCode: 200,
-        message: "user found successfully",
+        message: "user login successfully",
         key: currentUser.key,
       });
     }

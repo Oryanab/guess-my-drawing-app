@@ -2,14 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
 import { Socket } from "socket.io-client";
 import { Notyf } from "notyf";
-
-interface getDrawingData {
-  level: string;
-  word: string;
-  drawing: string;
-  scorePlayerOne: number;
-  scorePlayerTwo: number;
-}
+import { getDrawingData } from "../types";
 
 export default function GuessingView({
   playerOne,

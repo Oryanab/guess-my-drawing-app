@@ -3,25 +3,7 @@ import DrawingView from "./DrawingView";
 import GuessingView from "./GuessingView";
 import { Socket } from "socket.io-client";
 import { Notyf } from "notyf";
-
-interface GameStarted {
-  started: boolean;
-  players: string[];
-}
-
-interface FirstTurn {
-  first: boolean;
-}
-
-interface Drawing {
-  image: string;
-  word: string;
-}
-
-interface EndGame {
-  winner: string;
-  loser: string;
-}
+import { GameStarted, FirstTurn, EndGame } from "../types";
 
 export default function Game({
   username,

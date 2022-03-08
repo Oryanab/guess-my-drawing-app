@@ -4,6 +4,12 @@ const http = require("http");
 import * as socketIO from "socket.io";
 const { v4: uuidv4 } = require("uuid");
 import User from "../schema/userSchema";
+import {
+  joinedUserData,
+  getDrawingData,
+  SinglePlayer,
+  CheckScore,
+} from "../types/socket_types";
 
 const server = http.createServer(app);
 
@@ -16,42 +22,6 @@ const io = new socketIO.Server(server, {
 
 let ROOM_ID = uuidv4();
 const staticPlayersObject: any = {};
-
-/*
-    Goal:
-    - Join_room
-    - disconnect
-
-    - end_game
-    - player_won
-    - disconnect
-    - switch_turn
-*/
-
-interface joinedUserData {
-  username: string;
-}
-
-interface getDrawingData {
-  level: string;
-  word: string;
-  drawing: string;
-  scorePlayerOne: number;
-  scorePlayerTwo: number;
-}
-
-interface SinglePlayer {
-  username: string;
-  socketId: string;
-  room: string;
-}
-
-interface CheckScore {
-  playerOne: string;
-  playerOneScore: number;
-  playerTwo: string;
-  playerTwoScore: number;
-}
 
 let usersInRoom: string[] = [];
 io.on("connection", (socket: Socket) => {
@@ -164,7 +134,6 @@ io.on("connection", (socket: Socket) => {
       (user: SinglePlayer) =>
         user.room === currentUser.room && user.username !== currentUser.username
     );
-    console.log(currentUser.username, secondPlayerInRoom?.username);
 
     await User.findOneAndUpdate(
       { username: secondPlayerInRoom && secondPlayerInRoom.username },
