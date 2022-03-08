@@ -37,13 +37,24 @@ export default function DrawingView({
   const [brushColor, setBrushColor] = useState("#130f40");
   let canvas: any = useRef(null);
 
+  const checkWinnerStatus = () => {
+    if (scorePlayerOne >= 5 || scorePlayerTwo >= 5) {
+      socket.emit("check_score", {
+        playerOne,
+        playerOneScore: scorePlayerOne,
+        playerTwo,
+        playerTwoScore: scorePlayerTwo,
+      });
+      return;
+    }
+  };
+
   // Utils
   const handleClickSaveUrl = () => {
-    if (canvas.current!.getDataURL().length < 500) {
+    if (canvas.current!.getDataURL().length < 7000) {
       alert("Your drawing isn't sufficient please keep on drawing");
       return;
     }
-
     setDrawingImg(canvas.current!.getDataURL());
   };
 
@@ -83,8 +94,13 @@ export default function DrawingView({
     // -1 for no option selected
   }
 
+  const quitMatch = () => {
+    socket.emit("quit_game");
+  };
+
   const handleSwitchTurn = (e: any) => {
     e.preventDefault();
+    checkWinnerStatus();
     if (drawingImg !== "") {
       socket.emit("sent_drawing", {
         level: selectedLevel,
@@ -198,7 +214,9 @@ export default function DrawingView({
           </Button>
         </Card.Body>
         <Card.Body>
-          <Button variant="outline-danger">Quit Match</Button>
+          <Button onClick={quitMatch} variant="outline-danger">
+            Quit Match
+          </Button>
         </Card.Body>
       </Card>
     </div>

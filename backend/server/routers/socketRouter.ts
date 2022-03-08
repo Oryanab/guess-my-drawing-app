@@ -3,6 +3,7 @@ import app from "./app";
 const http = require("http");
 import * as socketIO from "socket.io";
 const { v4: uuidv4 } = require("uuid");
+import User from "../schema/userSchema";
 
 const server = http.createServer(app);
 
@@ -44,6 +45,14 @@ interface SinglePlayer {
   socketId: string;
   room: string;
 }
+
+interface CheckScore {
+  playerOne: string;
+  playerOneScore: number;
+  playerTwo: string;
+  playerTwoScore: number;
+}
+
 let usersInRoom: string[] = [];
 io.on("connection", (socket: Socket) => {
   socket.on("join_room", (data: joinedUserData) => {
@@ -93,11 +102,41 @@ io.on("connection", (socket: Socket) => {
     }
   });
 
-  socket.on("end_game", () => {
+  socket.on("check_score", async (data: CheckScore) => {
     const currentUser = staticPlayersObject[socket.id];
-    io.sockets.in(currentUser.room).socketsLeave(currentUser.room);
-    const allSocketsInRoom = io.sockets.in(currentUser.room).allSockets();
-    console.log(allSocketsInRoom);
+    if (data.playerOneScore >= 5) {
+      await User.findOneAndUpdate(
+        { username: data.playerOne },
+        { $inc: { wins: 1 } }
+      );
+      await User.findOneAndUpdate(
+        { username: data.playerTwo },
+        { $inc: { losses: 1 } }
+      );
+      io.in(currentUser && currentUser.room).emit("player_has_won", {
+        winner: data.playerOne,
+        loser: data.playerTwo,
+      });
+      io.sockets
+        .in(currentUser && currentUser.room)
+        .socketsLeave(currentUser.room);
+    } else if (data.playerTwoScore >= 5) {
+      await User.findOneAndUpdate(
+        { username: data.playerTwo },
+        { $inc: { wins: 1 } }
+      );
+      await User.findOneAndUpdate(
+        { username: data.playerOne },
+        { $inc: { losses: 1 } }
+      );
+      io.in(currentUser && currentUser.room).emit("player_has_won", {
+        winner: data.playerTwo,
+        loser: data.playerOne,
+      });
+      io.sockets
+        .in(currentUser && currentUser.room)
+        .socketsLeave(currentUser.room);
+    }
   });
 
   socket.on("switch_turn", () => {
@@ -117,15 +156,36 @@ io.on("connection", (socket: Socket) => {
     socket.to(currentUser.room).emit("receive_drawing", data);
   });
 
-  socket.on("disconnect", () => {
-    const currentUser = staticPlayersObject[socket.id];
+  socket.on("quit_game", async () => {
+    const currentUser: SinglePlayer = staticPlayersObject[socket.id];
+    const valuesStaticPlayerObject: SinglePlayer[] =
+      Object.values(staticPlayersObject);
+    const secondPlayerInRoom = valuesStaticPlayerObject.find(
+      (user: SinglePlayer) =>
+        user.room === currentUser.room && user.username !== currentUser.username
+    );
+    console.log(currentUser.username, secondPlayerInRoom?.username);
+
+    await User.findOneAndUpdate(
+      { username: secondPlayerInRoom && secondPlayerInRoom.username },
+      { $inc: { wins: 1 } }
+    );
+    await User.findOneAndUpdate(
+      { username: currentUser && currentUser.username },
+      { $inc: { losses: 1 } }
+    );
+
+    socket.in(currentUser && currentUser.room).emit("player_has_disconnected", {
+      winner: secondPlayerInRoom && secondPlayerInRoom.username,
+    });
+  });
+
+  socket.on("disconnect", async () => {
+    const currentUser: SinglePlayer = staticPlayersObject[socket.id];
+    socket.in(currentUser && currentUser.room).emit("lost_connection");
     io.sockets
       .in(currentUser && currentUser.room)
       .socketsLeave(currentUser && currentUser.room);
-    const allSocketsInRoom = io.sockets
-      .in(currentUser && currentUser.room)
-      .allSockets();
-    console.log(allSocketsInRoom);
   });
 });
 

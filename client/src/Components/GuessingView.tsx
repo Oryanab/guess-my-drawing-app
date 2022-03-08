@@ -43,6 +43,22 @@ export default function GuessingView({
   const [returnedLevel, setReturnedLevel] = useState<string>("");
   const [returnedWord, setReturnedWord] = useState<string>("");
 
+  const checkWinnerStatus = () => {
+    if (scorePlayerOne >= 5 || scorePlayerTwo >= 5) {
+      socket.emit("check_score", {
+        playerOne,
+        playerOneScore: scorePlayerOne,
+        playerTwo,
+        playerTwoScore: scorePlayerTwo,
+      });
+      return;
+    }
+  };
+
+  const quitMatch = () => {
+    socket.emit("quit_game");
+  };
+
   useEffect(() => {
     socket.on("receive_drawing", (data: getDrawingData) => {
       setWaitingView(false);
@@ -62,16 +78,19 @@ export default function GuessingView({
           username === playerOne
             ? setScorePlayerOne((prev) => prev + 1)
             : setScorePlayerTwo((prev) => prev + 1);
+          checkWinnerStatus();
           break;
         case "medium":
           username === playerOne
             ? setScorePlayerOne((prev) => prev + 3)
             : setScorePlayerTwo((prev) => prev + 3);
+          checkWinnerStatus();
           break;
         case "hard":
           username === playerOne
             ? setScorePlayerOne((prev) => prev + 5)
             : setScorePlayerTwo((prev) => prev + 5);
+          checkWinnerStatus();
           break;
         default:
           return;
@@ -143,7 +162,9 @@ export default function GuessingView({
           </div>
         </Card.Body>
         <Card.Body>
-          <Button variant="outline-danger">Quit Match</Button>
+          <Button onClick={quitMatch} variant="outline-danger">
+            Quit Match
+          </Button>
         </Card.Body>
       </Card>
     </div>

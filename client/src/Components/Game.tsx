@@ -17,6 +17,11 @@ interface Drawing {
   word: string;
 }
 
+interface EndGame {
+  winner: string;
+  loser: string;
+}
+
 export default function Game({
   username,
   socket,
@@ -70,7 +75,26 @@ export default function Game({
       socket.on("player_sent_drawing", (data) => {
         console.log(data);
       });
+
+    socket &&
+      socket.on("player_has_won", (data: EndGame) => {
+        alert(`we have a winner - ${data.winner}`);
+        window.location.reload();
+      });
+
+    socket &&
+      socket.on("player_has_disconnected", (data: EndGame) => {
+        alert(`we have a winner - ${data.winner}`);
+        window.location.reload();
+      });
+
+    socket &&
+      socket.on("lost_connection", () => {
+        alert(`connection has lost with your partner`);
+        window.location.reload();
+      });
   }, [socket]);
+
   return (
     <div>
       <h1>Welcome to the game</h1>
