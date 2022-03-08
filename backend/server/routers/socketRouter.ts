@@ -49,12 +49,6 @@ io.on("connection", (socket: Socket) => {
         socketId: socket.id,
         room: ROOM_ID,
       };
-
-      console.log(
-        `User with ID: ${
-          staticPlayersObject[socket.id].username
-        } joined room: ${ROOM_ID}`
-      );
     } else {
       ROOM_ID = uuidv4();
       socket.join(ROOM_ID);
@@ -64,11 +58,6 @@ io.on("connection", (socket: Socket) => {
         socketId: socket.id,
         room: ROOM_ID,
       };
-      console.log(
-        `User with ID: ${
-          staticPlayersObject[socket.id].username
-        } joined room: ${ROOM_ID}`
-      );
     }
   });
 

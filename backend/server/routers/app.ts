@@ -1,5 +1,6 @@
-const express = require("express");
+import express, { Request, Response } from "express";
 require("dotenv").config();
+import path from "path";
 import mongoose from "mongoose";
 import {
   middlewareServerError,
@@ -27,5 +28,10 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
+
+app.use("/", express.static("build"));
+app.get("/", (_req: Request, res: Response) => {
+  res.sendFile(path.resolve("build/index.html"));
+});
 
 export default app;
