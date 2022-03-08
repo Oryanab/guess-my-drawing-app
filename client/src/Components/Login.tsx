@@ -48,6 +48,10 @@ export default function Login() {
   };
   return (
     <div className="login-parent">
+      <h1 className="login-title">
+        <b> Guess My Drawing</b>
+      </h1>
+
       <div className="login">
         <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -71,7 +75,7 @@ export default function Login() {
             className="mb-3"
             controlId="exampleForm.ControlTextarea1"
           >
-            <Form.Label>Enter Your Secret Key(sent by mail):</Form.Label>
+            <Form.Label>Enter Your Secret Key:</Form.Label>
             <Form.Control
               onChange={(e) => setSecretKey(e.target.value)}
               type="text"

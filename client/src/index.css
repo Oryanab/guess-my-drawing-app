@@ -1,16 +1,18 @@
 .login {
   font-family: monospace;
+  font-size: 2.3vh;
   margin: auto;
   width: 80vw;
   height: 40vh;
-  background-color: #28ffbf;
+  background-color: gold;
   border: 3px solid black;
   border-radius: 2vh;
   padding: 4vh;
+  margin-top: 3vh;
 }
 
 .login-parent {
-  padding-top: 50%;
+  padding-top: 10vh;
 }
 
 .app {
@@ -24,6 +26,8 @@
   font-family: monospace;
   padding-top: 10%;
   text-align: center;
+  background-color: #b983ff;
+  padding-bottom: 3vh;
 }
 
 .leader-board {
@@ -52,4 +56,22 @@
   border-bottom: 0.2vh solid gold;
   text-align: left;
   padding-left: 10vw;
+}
+
+.login-title {
+  color: gold;
+  font-size: 4.5vh;
+  text-align: center;
+  border-top: 0.2vh solid gold;
+  border-bottom: 0.2vh solid gold;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+}
+
+.login-instructions {
+  font-size: 1.8vh;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  text-align: center;
+  margin-top: 2vh;
 }
