@@ -4,6 +4,7 @@ import Board from "./Board";
 import CanvasDraw from "react-canvas-draw";
 import axios from "axios";
 import { Socket } from "socket.io-client";
+import { Notyf } from "notyf";
 
 export default function DrawingView({
   playerOne,
@@ -36,6 +37,7 @@ export default function DrawingView({
   const [displayCanvasDiv, setDisplayCanvasDiv] = useState<string>("none");
   const [brushColor, setBrushColor] = useState("#130f40");
   let canvas: any = useRef(null);
+  const notyf = new Notyf();
 
   const checkWinnerStatus = () => {
     if (scorePlayerOne >= 5 || scorePlayerTwo >= 5) {
@@ -52,10 +54,11 @@ export default function DrawingView({
   // Utils
   const handleClickSaveUrl = () => {
     if (canvas.current!.getDataURL().length < 7000) {
-      alert("Your drawing isn't sufficient please keep on drawing");
+      notyf.error("Your drawing isn't sufficient please keep on drawing");
       return;
     }
     setDrawingImg(canvas.current!.getDataURL());
+    notyf.success("Saved Successfully!");
   };
 
   const handleClickEraseAll = () => {
@@ -77,7 +80,7 @@ export default function DrawingView({
         setDisplayedWords(res.data.message);
       })
       .catch((err) => {
-        alert(err.data.message);
+        notyf.error(err.data.message);
       });
   };
 
@@ -115,7 +118,7 @@ export default function DrawingView({
       resetSelectElement();
       canvas = null;
     } else {
-      alert("Your drawing isn't saved please save your drawing");
+      notyf.error("Your drawing isn't saved please save your drawing");
     }
   };
 

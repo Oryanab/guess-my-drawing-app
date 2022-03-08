@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DrawingView from "./DrawingView";
 import GuessingView from "./GuessingView";
 import { Socket } from "socket.io-client";
+import { Notyf } from "notyf";
 
 interface GameStarted {
   started: boolean;
@@ -38,6 +39,7 @@ export default function Game({
   const [drawingImg, setDrawingImg] = useState<string>("");
   const [selectedWord, setSelectedWord] = useState<string>("");
   const [selectedLevel, setSelectedLevel] = useState<string>("easy");
+  const notyf = new Notyf();
 
   useEffect(() => {
     // When you join the game
@@ -49,7 +51,7 @@ export default function Game({
         setWaitingForOpponent(data.started);
         setPlayerOne(data.players[0]);
         setPlayerTwo(data.players[1]);
-        console.log("started game");
+        notyf.success("The game has officially started good luck!");
       });
 
     // When the server declare who first:
@@ -70,28 +72,32 @@ export default function Game({
         setCurrentTurn(false);
       });
 
-    // When server get sent a photo
-    socket &&
-      socket.on("player_sent_drawing", (data) => {
-        console.log(data);
-      });
-
     socket &&
       socket.on("player_has_won", (data: EndGame) => {
-        alert(`we have a winner - ${data.winner}`);
-        window.location.reload();
+        notyf.success(
+          ` 🏆  🏆  🏆 we have a winner - ${data.winner} 🏆  🏆  🏆 `
+        );
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       });
 
     socket &&
       socket.on("player_has_disconnected", (data: EndGame) => {
-        alert(`we have a winner - ${data.winner}`);
-        window.location.reload();
+        notyf.success(
+          ` 🏆  🏆  🏆 we have a winner - ${data.winner} 🏆  🏆  🏆 `
+        );
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       });
 
     socket &&
       socket.on("lost_connection", () => {
-        alert(`connection has lost with your partner`);
-        window.location.reload();
+        notyf.error(`connection has lost with your partner`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       });
   }, [socket]);
 

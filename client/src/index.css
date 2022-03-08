@@ -75,3 +75,19 @@
   text-align: center;
   margin-top: 2vh;
 }
+
+.personal-info {
+  margin-top: 5vh;
+  text-align: center;
+  font-size: 2vh;
+  color: gold;
+  border-top: 0.2vh solid gold;
+  border-bottom: 0.2vh solid gold;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+}
+
+.personal-links {
+  display: flex;
+  justify-content: space-evenly;
+}

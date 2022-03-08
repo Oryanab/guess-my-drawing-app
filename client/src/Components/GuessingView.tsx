@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
 import { Socket } from "socket.io-client";
+import { Notyf } from "notyf";
 
 interface getDrawingData {
   level: string;
@@ -42,6 +43,7 @@ export default function GuessingView({
   const [returnedImage, setReturnedImage] = useState<string>("");
   const [returnedLevel, setReturnedLevel] = useState<string>("");
   const [returnedWord, setReturnedWord] = useState<string>("");
+  const notyf = new Notyf();
 
   const checkWinnerStatus = () => {
     if (scorePlayerOne >= 5 || scorePlayerTwo >= 5) {
@@ -95,13 +97,15 @@ export default function GuessingView({
         default:
           return;
       }
-      alert("Correct");
+      notyf.success("Correct");
       socket.emit("switch_turn");
       setWaitingView(true);
       setSelectedWord("");
       setUserGuess("");
     } else {
-      alert("your guess is wrong, please continue guessing or quit match");
+      notyf.error(
+        "your guess is wrong, please continue guessing or quit match"
+      );
     }
   };
   return (

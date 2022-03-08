@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
+import { Notyf } from "notyf";
 
 export default function Login() {
   const [userExist, setUserExist] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [secretKey, setSecretKey] = useState<string>("");
+  const notyf = new Notyf();
 
   const createCookie = (value: string) => {
     const currentTimePlusHour = new Date(
@@ -24,10 +26,16 @@ export default function Login() {
           })
           .then((res) => {
             createCookie(res.data.key);
-            alert(res.data.message);
-            window.location.reload();
+            notyf.success(res.data.message);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           })
-          .catch((err) => console.log(err));
+          .catch(() =>
+            notyf.error(
+              "username is exist in our database please enter your secret key or sign up with new one"
+            )
+          );
         break;
       case true:
         axios
@@ -37,10 +45,12 @@ export default function Login() {
           })
           .then((res) => {
             createCookie(res.data.key);
-            alert(res.data.message);
-            window.location.reload();
+            notyf.success(res.data.message);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => notyf.error(err.message));
         break;
       default:
         return;
@@ -86,6 +96,22 @@ export default function Login() {
             Login
           </Button>
         </Form>
+      </div>
+      <div className="personal-info">
+        <b>Proudly create by Oryan Abergel</b>
+        <br />
+        <br />
+        <div className="personal-links">
+          <a
+            href="https://github.com/Oryanab/guess-my-drawing-app"
+            target="_blank"
+          >
+            <Button variant="dark">GitHub</Button>
+          </a>
+          <a href="https://www.linkedin.com/in/oryan-abergel/" target="_blank">
+            <Button variant="primary">LinkedIn</Button>
+          </a>
+        </div>
       </div>
     </div>
   );

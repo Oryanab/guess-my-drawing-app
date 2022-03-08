@@ -50,17 +50,18 @@ export default function HomePage({ user }: { user: Users }) {
         </div>
         <br />
       </div>
-
-      <h3>Start a new Game!</h3>
-      <div className="login-instructions">
-        <b> Instructions</b>
-        <p>
-          Sign up with a unique user name, make sure you save your secret key,
-          enter a game and wait for your partner to come, once arrive one of the
-          players will select a word and draw it, then, send it to the other
-          player, that player has to guess what is the word the other player
-          draw. winner is the first player to reach 5 points!
-        </p>
+      <div style={{ display: profileBlock }}>
+        <h3>Start a new Game!</h3>
+        <div className="login-instructions">
+          <b> Instructions</b>
+          <p>
+            Sign up with a unique user name, make sure you save your secret key,
+            enter a game and wait for your partner to come, once arrive one of
+            the players will select a word and draw it, then, send it to the
+            other player, that player has to guess what is the word the other
+            player draw. winner is the first player to reach 5 points!
+          </p>
+        </div>
       </div>
       {gameBlock ? (
         <Game username={user && user.username} socket={user && socket} />
