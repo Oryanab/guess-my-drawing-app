@@ -10,7 +10,7 @@ export default function Board({
 }) {
   return (
     <CanvasDraw
-      style={{ border: "0.5vh solid black" }}
+      style={{ border: "0.5vh solid black", width: "90vw" }}
       brushRadius={1}
       brushColor={brushColor}
       hideGrid={true}

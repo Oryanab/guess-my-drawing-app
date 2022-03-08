@@ -1,6 +1,12 @@
 import express, { Router } from "express";
 require("dotenv").config();
 import User from "../schema/userSchema";
+import { Users } from "../types/mongo_types";
+
+interface LeaderBoard {
+  username: string;
+  wins: number;
+}
 
 // Start Router
 const router: Router = express.Router();
@@ -10,6 +16,20 @@ router.get(
   async (_req: express.Request, res: express.Response) => {
     const allUsers = await User.find();
     res.status(200).json({ statusCode: 200, message: allUsers });
+  }
+);
+
+router.get(
+  "/leadboard",
+  async (_req: express.Request, res: express.Response) => {
+    const leaderBoard: LeaderBoard[] = [];
+    const leaders: Users[] = await User.find().sort({ wins: -1 }).limit(5);
+
+    leaders.forEach((item: Users) => {
+      leaderBoard.push({ username: item.username, wins: item.wins });
+    });
+
+    res.status(200).json({ statusCode: 200, message: leaderBoard });
   }
 );
 

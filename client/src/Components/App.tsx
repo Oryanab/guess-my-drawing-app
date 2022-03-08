@@ -42,7 +42,7 @@ function App() {
   }, [isCookie]);
 
   return (
-    <div>
+    <div className="app">
       {confirmUserToken === true ? <HomePage user={user!} /> : <Login />}
     </div>
   );

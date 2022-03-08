@@ -169,8 +169,9 @@ export default function DrawingView({
         <Card.Body style={{ display: selectedWord === "" ? "none" : "block" }}>
           <Card.Title>The word you have selected is {selectedWord}</Card.Title>
           <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            Please carefully draw the word you have chosen, you may pick any
+            color as your wish, when you finish make sure to save your drawing,
+            and the hit "Send Drawing"!
           </Card.Text>
           <div>
             {/* <CanvasDraw
@@ -192,7 +193,8 @@ export default function DrawingView({
                 margin: "2vh",
                 padding: "2vh",
                 justifyContent: "space-evenly",
-                backgroundColor: "lightgreen",
+                backgroundColor: "#b983ff",
+                borderRadius: "1vh",
               }}
               className="color-options"
             >

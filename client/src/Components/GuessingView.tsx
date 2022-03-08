@@ -99,6 +99,7 @@ export default function GuessingView({
       socket.emit("switch_turn");
       setWaitingView(true);
       setSelectedWord("");
+      setUserGuess("");
     } else {
       alert("your guess is wrong, please continue guessing or quit match");
     }
@@ -121,13 +122,10 @@ export default function GuessingView({
           </>
         </Card.Header>
         <Card.Body>
-          <Card.Title>
-            The the opponent has sent you a word with difficulty level{" "}
-            {returnedLevel}
-          </Card.Title>
+          <Card.Title>Waiting for your opponent to finish his play</Card.Title>
           <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            Once the opponent finish drawing, the drawing will be displayed
+            bellow
           </Card.Text>
           <div>
             <img
@@ -150,6 +148,7 @@ export default function GuessingView({
                   onChange={(e) => setUserGuess(e.target.value)}
                   type="text"
                   placeholder="my guess is..."
+                  value={userGuess}
                 />
               </Form.Group>
               <Button

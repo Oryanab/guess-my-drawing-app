@@ -47,40 +47,42 @@ export default function Login() {
     }
   };
   return (
-    <div className="login">
-      <Form>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Enter Your Username:</Form.Label>
-          <Form.Control
-            onChange={(e) => setUsername(e.target.value)}
-            type="text"
-            placeholder="my username..."
-          />
-          <Form.Check
-            type="switch"
-            id="custom-switch"
-            label="This user exists"
-            onChange={(e) => {
-              !userExist ? setUserExist(true) : setUserExist(false);
-            }}
-          />
-        </Form.Group>
-        <Form.Group
-          style={{ display: userExist ? "block" : "none" }}
-          className="mb-3"
-          controlId="exampleForm.ControlTextarea1"
-        >
-          <Form.Label>Enter Your Secret Key(sent by mail):</Form.Label>
-          <Form.Control
-            onChange={(e) => setSecretKey(e.target.value)}
-            type="text"
-            placeholder="my secret key..."
-          />
-        </Form.Group>
-        <Button onClick={(e) => handleSubmit(e)} variant="outline-primary">
-          Login
-        </Button>
-      </Form>
+    <div className="login-parent">
+      <div className="login">
+        <Form>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label>Enter Your Username:</Form.Label>
+            <Form.Control
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+              placeholder="my username..."
+            />
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="This user exists"
+              onChange={(e) => {
+                !userExist ? setUserExist(true) : setUserExist(false);
+              }}
+            />
+          </Form.Group>
+          <Form.Group
+            style={{ display: userExist ? "block" : "none" }}
+            className="mb-3"
+            controlId="exampleForm.ControlTextarea1"
+          >
+            <Form.Label>Enter Your Secret Key(sent by mail):</Form.Label>
+            <Form.Control
+              onChange={(e) => setSecretKey(e.target.value)}
+              type="text"
+              placeholder="my secret key..."
+            />
+          </Form.Group>
+          <Button onClick={(e) => handleSubmit(e)} variant="outline-primary">
+            Login
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 }
