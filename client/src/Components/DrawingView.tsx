@@ -75,7 +75,7 @@ export default function DrawingView({
 
   const handleChangeDifficultyLevel = async (selectedLevel: string) => {
     axios
-      .get(`http://localhost:4000/api/words/${selectedLevel}`)
+      .get(`/api/words/${selectedLevel}`)
       .then((res) => {
         setDisplayedWords(res.data.message);
       })

@@ -25,7 +25,7 @@ function App() {
 
   const confirmUser = (key: string) => {
     axios
-      .post("http://localhost:4000/api/login/single-user", {
+      .post("/api/login/single-user", {
         key: isCookie,
       })
       .then((res) => {

@@ -6,7 +6,7 @@ import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { LeaderBoard } from "../types";
 import { Notyf } from "notyf";
-const socket: Socket = io("http://localhost:4000");
+const socket: Socket = io("/");
 
 export default function HomePage({ user }: { user: Users }) {
   //const handlePlayNow = (e: React.MouseEvent<HTMLButtonElement>) => {};
@@ -16,7 +16,7 @@ export default function HomePage({ user }: { user: Users }) {
   const [leadBoardUsers, setLeadBoardUsers] = useState<LeaderBoard[]>([]);
   const notyf = new Notyf();
   const getLeadBoard = async () => {
-    axios.get("http://localhost:4000/api/login/leadboard").then((res) => {
+    axios.get("/api/login/leadboard").then((res) => {
       setLeadBoardUsers(res.data.message);
     });
   };

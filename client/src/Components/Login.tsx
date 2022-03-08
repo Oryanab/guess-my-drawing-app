@@ -21,7 +21,7 @@ export default function Login() {
     switch (userExist) {
       case false:
         axios
-          .post("http://localhost:4000/api/login/new-user", {
+          .post("/api/login/new-user", {
             username: username,
           })
           .then((res) => {
@@ -39,7 +39,7 @@ export default function Login() {
         break;
       case true:
         axios
-          .post("http://localhost:4000/api/login/get-user", {
+          .post("/api/login/get-user", {
             username: username,
             key: secretKey,
           })
